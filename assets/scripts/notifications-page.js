@@ -401,8 +401,12 @@ class NotificationsPageManager {
         if (!badge) return;
         
         const unreadCount = this.allNotifications.filter(n => n.isUnread).length;
-        try { localStorage.setItem('notificationsUnreadCount', String(unreadCount)); } catch (e) {}
         badge.textContent = unreadCount;
+        
+        // Trigger badge-counter.js to refresh all notification badges
+        if (window.refreshCountBadges && typeof window.refreshCountBadges === 'function') {
+            window.refreshCountBadges();
+        }
         
         if (unreadCount === 0) {
             badge.style.display = 'none';
@@ -437,10 +441,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Remove all notifications function
 async function removeAllNotifications() {
-    if (!confirm('Are you sure you want to remove all notifications? This action cannot be undone.')) {
-        return;
-    }
-
     if (!window.notificationsPageManager) {
         console.error('NotificationsPageManager not found');
         return;

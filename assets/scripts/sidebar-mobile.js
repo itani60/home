@@ -685,7 +685,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // My Profile - redirect based on user type (business or regular)
-    const qaProfile = root.querySelector('.quick-access-item.help');
+    // Use .my-profile-link selector to specifically target My Profile (not Help)
+    const qaProfile = root.querySelector('.quick-access-item.my-profile-link, .quick-access-item.help[href="#"]');
     if (qaProfile) {
         qaProfile.addEventListener('click', async function(e) {
             e.preventDefault();

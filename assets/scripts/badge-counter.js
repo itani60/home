@@ -19,9 +19,21 @@
     }
 
     function getNotificationsUnreadCount() {
-        const stored = localStorage.getItem('notificationsUnreadCount');
-        const asNum = stored !== null ? Number(stored) : NaN;
-        return Number.isFinite(asNum) && asNum >= 0 ? asNum : 0;
+        // Get count directly from notifications-page.js if available
+        if (window.notificationsPageManager && window.notificationsPageManager.allNotifications) {
+            const unreadCount = window.notificationsPageManager.allNotifications.filter(n => n.isUnread).length;
+            return unreadCount;
+        }
+        // Fallback: try to get from desktop badge if it exists
+        const desktopBadge = document.getElementById('desktopNotificationCount');
+        if (desktopBadge && desktopBadge.textContent) {
+            const count = Number(desktopBadge.textContent);
+            if (Number.isFinite(count) && count >= 0) {
+                return count;
+            }
+        }
+        // Default to 0 if no source available
+        return 0;
     }
 
     function updateWishlistBadges(count) {

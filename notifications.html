@@ -296,7 +296,7 @@
                             <span class="quick-access-title">Wishlist</span>
                             <span class="quick-access-subtitle">Save your favorites</span>
                         </div>
-                   
+                        <div class="quick-access-badge count" id="mobileWishlistBadge" style="display: none;"></div>
                     </a>
                     
                     <a href="notifications.html" class="quick-access-item notifications">
@@ -305,9 +305,20 @@
                         </div>
                         <div class="quick-access-content">
                             <span class="quick-access-title">Notifications</span>
-                            <span class="quick-access-subtitle">3 unread</span>
+                            <span class="quick-access-subtitle" id="mobileNotificationsSubtitle"></span>
                         </div>
-                        <div class="quick-access-badge count">3</div>
+                        <div class="quick-access-badge count" id="mobileNotificationsBadge" style="display: none;"></div>
+                    </a>
+                    
+                    <a href="price-alerts.html" class="quick-access-item price-alerts">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="quick-access-content">
+                            <span class="quick-access-title">Price Alerts</span>
+                            <span class="quick-access-subtitle">Track prices</span>
+                        </div>
+                        <div class="quick-access-badge count" id="mobilePriceAlertsBadge" style="display: none;"></div>
                     </a>
                     
                     <a href="local-business.html" class="quick-access-item local-business">
@@ -315,18 +326,28 @@
                             <i class="fas fa-store"></i>
                         </div>
                         <div class="quick-access-content">
-                            <span class="quick-access-title">Local Business</span>
-                            <span class="quick-access-subtitle">Near you</span>
+                            <span class="quick-access-title">LocalHub</span>
+                            <span class="quick-access-subtitle">Local Business</span>
                         </div>
                     </a>
                     
-                    <a href="my-profile.html" class="quick-access-item help">
+                    <a href="my_account.html" class="quick-access-item help">
                         <div class="quick-access-icon">
                             <i class="fas fa-id-card"></i>
                         </div>
                         <div class="quick-access-content">
                             <span class="quick-access-title">My Profile</span>
                             <span class="quick-access-subtitle">View account</span>
+                        </div>
+                    </a>
+                    
+                    <a href="FAQs.html" class="quick-access-item help">
+                        <div class="quick-access-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="quick-access-content">
+                            <span class="quick-access-title">Help</span>
+                            <span class="quick-access-subtitle">Get support</span>
                         </div>
                     </a>
                 </div>
@@ -469,8 +490,8 @@
                     <li class="breadcrumb-item">
                         <a href="index.html">Home</a>
                     </li>
-                    <li class="breadcrumb-item">
-                        <a href="my-account.html">My Account</a>
+                    <li class="breadcrumb-item" id="accountBreadcrumbItem">
+                        <a href="my_account.html" id="accountBreadcrumbLink">My Account</a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">
                         Notifications
@@ -619,7 +640,48 @@
     <script src="assets/scripts/notifications-page.js"></script>
     <script src="assets/scripts/notifications.js"></script>
 
-  
+    <script>
+        // Update breadcrumb based on user type (business or regular)
+        (async function() {
+            const accountBreadcrumbLink = document.getElementById('accountBreadcrumbLink');
+            if (!accountBreadcrumbLink) return;
+            
+            let isBusinessUser = false;
+            
+            // Try business user first
+            if (window.businessAWSAuthService) {
+                try {
+                    const info = await window.businessAWSAuthService.getUserInfo();
+                    if (info && info.success && info.user) {
+                        isBusinessUser = true;
+                    }
+                } catch (err) {
+                    // User not logged in as business user - try regular user
+                }
+            }
+            
+            // If no business user, try regular user
+            if (!isBusinessUser && window.awsAuthService) {
+                try {
+                    const info = await window.awsAuthService.getUserInfo();
+                    if (info && info.success && info.user) {
+                        isBusinessUser = false;
+                    }
+                } catch (err) {
+                    // User not logged in - keep default
+                }
+            }
+            
+            // Update breadcrumb based on user type
+            if (isBusinessUser) {
+                accountBreadcrumbLink.textContent = 'Business Account Manager';
+                accountBreadcrumbLink.href = 'Business_account_manager.html';
+            } else {
+                accountBreadcrumbLink.textContent = 'My Account';
+                accountBreadcrumbLink.href = 'my_account.html';
+            }
+        })();
+    </script>
   
      
 </body>
