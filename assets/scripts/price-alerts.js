@@ -158,12 +158,38 @@ class PriceAlertsManager {
         // Clear existing content
         container.innerHTML = '';
 
+        // Get or create empty state element
+        let emptyState = document.querySelector('.empty-wishlist');
+        if (!emptyState) {
+            // Create empty state dynamically if it doesn't exist
+            emptyState = document.createElement('div');
+            emptyState.className = 'empty-wishlist';
+            emptyState.innerHTML = `
+                <div class="empty-wishlist-content">
+                    <div class="empty-wishlist-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>No price alerts set</h3>
+                    <p>Start setting price alerts on products to get notified when prices drop!</p>
+                </div>
+            `;
+            // Insert after the priceAlertsList container
+            container.parentNode.insertBefore(emptyState, container.nextSibling);
+        }
+
         // Show empty state if no alerts
         if (this.priceAlerts.length === 0) {
-            // Clear container - let hardcoded empty state show
-            container.innerHTML = '';
+            emptyState.style.display = 'block';
+            // Hide remove all button
+            const removeAllBtn = document.getElementById('removeAllAlertsBtn');
+            if (removeAllBtn) {
+                removeAllBtn.style.display = 'none';
+            }
             return;
         }
+
+        // Hide empty state when there are alerts
+        emptyState.style.display = 'none';
 
         // Show remove all button
         const removeAllBtn = document.getElementById('removeAllAlertsBtn');
@@ -644,12 +670,40 @@ class PriceAlertsManager {
         // Clear existing content
         container.innerHTML = '';
 
-        // Show empty state if no alerts
+        // Get or create empty state element
+        let emptyState = document.querySelector('.empty-wishlist');
+        if (!emptyState) {
+            // Create empty state dynamically if it doesn't exist
+            emptyState = document.createElement('div');
+            emptyState.className = 'empty-wishlist';
+            emptyState.innerHTML = `
+                <div class="empty-wishlist-content">
+                    <div class="empty-wishlist-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>No price alerts set</h3>
+                    <p>Start setting price alerts on products to get notified when prices drop!</p>
+                </div>
+            `;
+            // Insert after the priceAlertsList container
+            container.parentNode.insertBefore(emptyState, container.nextSibling);
+        }
+
+        // Show empty state if no alerts (either no alerts at all, or filtered results are empty)
         if (alerts.length === 0) {
-            // Clear container - let hardcoded empty state show
-            container.innerHTML = '';
+            emptyState.style.display = 'block';
+            // Hide remove all button if no alerts at all
+            if (this.priceAlerts.length === 0) {
+                const removeAllBtn = document.getElementById('removeAllAlertsBtn');
+                if (removeAllBtn) {
+                    removeAllBtn.style.display = 'none';
+                }
+            }
             return;
         }
+
+        // Hide empty state when there are filtered alerts
+        emptyState.style.display = 'none';
 
         // Create grid for price alert cards
         const alertsGrid = document.createElement('div');
